@@ -1,0 +1,433 @@
+/* =====================================================================
+   営農日報 Design Tokens
+   仕様書: DESIGN_SYSTEM.md（この2つが UI の唯一の仕様）
+
+   3層構造（USWDS / Atlassian / VA Design System の考え方にならう）
+     第1層 Primitive … 生の値。色・寸法の「原材料」。このファイル以外に値を書かない
+     第2層 Semantic  … 役割の名前（本文の色、危険を示す背景など）
+     第3層 Component … 部品ごとの決まり（ボタンの高さ、入力欄の枠など）
+
+   規則: style.css などの部品側は、第2層・第3層のトークンだけを使う。
+         余白（--space-*）と角丸（--radius-*）は全体共通の段階として直接使ってよい。
+         新しい値が必要なときは、まず DESIGN_SYSTEM.md とこのファイルに追加してから使う。
+   ===================================================================== */
+
+:root {
+  /* =========================== 第1層: Primitive =========================== */
+
+  /* 色: 緑（ブランド） */
+  --color-green-5: #f2f8f1;
+  --color-green-10: #e3efe2;
+  --color-green-20: #d8e9d6;
+  --color-green-40: #a9bfa2;
+  --color-green-50: #35793f;
+  --color-green-60: #295c33;
+  --color-green-70: #1f4a28;
+
+  /* 色: テラコッタ（アクセント・金額） */
+  --color-terra-10: #f8e8dc;
+  --color-terra-50: #c96f35;
+  --color-terra-60: #a14f22;
+  --color-terra-70: #7e3d17;
+
+  /* 色: 赤（危険・締め日超過） */
+  --color-red-5: #fdecea;
+  --color-red-20: #e6a397;
+  --color-red-50: #c9503c;
+  --color-red-60: #b3402f;
+  --color-red-70: #8a2c1f;
+
+  /* 色: 黄（お知らせ） */
+  --color-yellow-5: #fff8e1;
+  --color-yellow-30: #e0c96a;
+
+  /* 色: ニュートラル（温かみのある灰色） */
+  --color-neutral-0: #ffffff;
+  --color-neutral-2: #fffdf7;
+  --color-neutral-5: #f6f3ec;
+  --color-neutral-10: #eceee7;
+  --color-neutral-15: #e2e7de;
+  --color-neutral-40: #a0a89e;
+  --color-neutral-45: #8d968b;
+  --color-neutral-50: #767d74;
+  --color-neutral-55: #6b736a;
+  --color-neutral-60: #56605a;
+  --color-neutral-90: #26302a;
+
+  /* 色: 透明度つき */
+  --color-white-alpha-14: rgba(255, 255, 255, 0.14);
+  --color-white-alpha-24: rgba(255, 255, 255, 0.24);
+  --color-white-alpha-90: rgba(255, 255, 255, 0.9);
+  --color-ink-alpha-45: rgba(18, 28, 20, 0.45);
+  --color-ink-alpha-94: rgba(31, 46, 34, 0.94);
+
+  /* 文字 */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+  --font-size-100: 0.75rem;   /* 12px */
+  --font-size-200: 0.875rem;  /* 14px */
+  --font-size-300: 1rem;      /* 16px */
+  --font-size-400: 1.125rem;  /* 18px */
+  --font-size-500: 1.25rem;   /* 20px */
+  --font-size-600: 1.5rem;    /* 24px */
+  --font-size-800: 2.5rem;    /* 40px */
+  --font-weight-400: 400;
+  --font-weight-600: 600;
+  --font-weight-700: 700;
+  --line-height-125: 1.25;
+  --line-height-150: 1.5;
+  --line-height-160: 1.6;
+  --letter-spacing-wide: 0.35em;
+
+  /* 余白（4px を基準にした段階。全体共通で直接使ってよい） */
+  --space-0: 0;
+  --space-025: 2px;
+  --space-050: 4px;
+  --space-075: 6px;
+  --space-100: 8px;
+  --space-150: 12px;
+  --space-200: 16px;
+  --space-250: 20px;
+  --space-300: 24px;
+  --space-400: 32px;
+  --space-500: 40px;
+
+  /* 角丸（全体共通で直接使ってよい） */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  --radius-app-icon: 22.5%;
+
+  /* 線の太さ */
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-focus: 3px;
+  --border-width-accent: 5px;
+
+  /* 大きさ */
+  --size-touch-target: 44px;   /* VA / WCAG 2.5.5 の推奨タップ領域 */
+  --size-touch-compact: 36px;  /* 表の行・ヘッダーなど詰めて並べる所だけ（WCAG 2.5.8 の24px以上） */
+  --size-checkbox: 20px;
+  --size-step-number: 32px;
+  --size-app-icon: 76px;
+  --size-content-max: 960px;
+  --size-reading-max: 720px;
+  --size-dialog-max: 560px;
+  --size-dialog-narrow-max: 440px;
+  --size-login-max: 420px;
+  --size-input-duration: 4.6em;      /* 「◯時間」「◯分」の数字欄 */
+  --size-input-duration-min: 3em;
+  --size-input-rate-max: 8rem;       /* 単価の入力欄 */
+  --size-table-cell-wrap-min: 10rem; /* 表で折り返す列 */
+  --size-label-column: 6.5em;        /* 確認画面の見出し列 */
+  --size-amount-column: 4.8em;       /* 金額の列 */
+
+  /* 影 */
+  --shadow-100: 0 1px 4px rgba(31, 42, 31, 0.06);
+  --shadow-200: 0 1px 2px rgba(31, 42, 31, 0.05), 0 8px 24px rgba(31, 42, 31, 0.07);
+  --shadow-300: 0 4px 10px rgba(31, 42, 31, 0.12), 0 16px 40px rgba(31, 42, 31, 0.16);
+  --shadow-brand: 0 4px 14px rgba(41, 92, 51, 0.3);
+  --shadow-header: 0 2px 12px rgba(31, 74, 40, 0.28);
+  --shadow-inset-selected: 0 1px 5px rgba(0, 0, 0, 0.12);
+
+  /* 動き */
+  --duration-100: 80ms;
+  --duration-150: 150ms;
+  --scale-pressed: 0.97;
+  --blur-100: 4px;
+
+  /* 不透明度 */
+  --opacity-disabled: 0.45;
+  --opacity-muted: 0.9;
+
+  /* 重なり順 */
+  --z-100: 10;
+  --z-500: 50;
+  --z-900: 100;
+
+  /* =========================== 第2層: Semantic =========================== */
+
+  /* 文字色 */
+  --color-text: var(--color-neutral-90);
+  --color-text-subtle: var(--color-neutral-60);
+  --color-text-placeholder: var(--color-neutral-55);
+  --color-text-inverse: var(--color-neutral-0);
+  --color-text-inverse-subtle: var(--color-white-alpha-90);
+  --color-text-brand: var(--color-green-70);
+  --color-text-link: var(--color-green-60);
+  --color-text-accent: var(--color-terra-60);
+  --color-text-accent-bold: var(--color-terra-70);
+  --color-text-danger: var(--color-red-70);
+  --color-text-danger-link: var(--color-red-60);
+
+  /* 背景色 */
+  --color-bg-page: var(--color-neutral-5);
+  --color-bg-surface: var(--color-neutral-0);
+  --color-bg-surface-paper: var(--color-neutral-2);
+  --color-bg-sunken: var(--color-neutral-10);
+  --color-bg-neutral-subtle: var(--color-neutral-5);
+  --color-bg-subtle: var(--color-green-5);
+  --color-bg-brand-subtle: var(--color-green-10);
+  --color-bg-brand-subtle-hover: var(--color-green-20);
+  --color-bg-brand: var(--color-green-50);
+  --color-bg-brand-bold: var(--color-green-70);
+  --color-bg-accent-subtle: var(--color-terra-10);
+  --color-bg-accent: var(--color-terra-60);
+  --color-bg-danger-subtle: var(--color-red-5);
+  --color-bg-danger: var(--color-red-60);
+  --color-bg-info-subtle: var(--color-yellow-5);
+  --color-bg-inverse-subtle: var(--color-white-alpha-14);
+  --color-bg-inverse-hover: var(--color-white-alpha-24);
+  --color-bg-overlay: var(--color-ink-alpha-45);
+  --color-bg-toast: var(--color-ink-alpha-94);
+
+  /* 線の色 */
+  --color-border: var(--color-neutral-15);           /* 区切り線（装飾） */
+  --color-border-decorative: var(--color-green-40);  /* 作業欄の点線（装飾） */
+  --color-border-neutral: var(--color-neutral-40);
+  --color-border-control: var(--color-neutral-45);   /* 選択肢の枠（3:1以上） */
+  --color-border-input: var(--color-neutral-50);     /* 入力欄の枠（3:1以上） */
+  --color-border-brand: var(--color-green-50);
+  --color-border-brand-bold: var(--color-green-70);
+  --color-border-accent: var(--color-terra-50);
+  --color-border-danger: var(--color-red-50);
+  --color-border-danger-subtle: var(--color-red-20);
+  --color-border-info: var(--color-yellow-30);
+  --color-border-focused: var(--color-green-70);
+  --color-border-inverse: var(--color-neutral-0);
+
+  /* 文字の大きさ（用途） */
+  --font-size-caption: var(--font-size-100);   /* 必須マークなど。これ未満は使わない */
+  --font-size-small: var(--font-size-200);     /* 補足・バッジ・表 */
+  --font-size-body: var(--font-size-300);      /* 本文・入力・ボタン */
+  --font-size-lead: var(--font-size-400);      /* カードの見出し・強調 */
+  --font-size-heading: var(--font-size-500);   /* 画面の見出し */
+  --font-size-display: var(--font-size-600);   /* 集計の数字 */
+  --font-size-icon: var(--font-size-800);      /* 警告の記号 */
+  --font-weight-regular: var(--font-weight-400);
+  --font-weight-semibold: var(--font-weight-600);
+  --font-weight-bold: var(--font-weight-700);
+  --line-height-tight: var(--line-height-125);
+  --line-height-base: var(--line-height-160);
+  --line-height-compact: var(--line-height-150);
+
+  /* 影（高さ） */
+  --elevation-flat: var(--shadow-100);
+  --elevation-raised: var(--shadow-200);
+  --elevation-overlay: var(--shadow-300);
+
+  /* フォーカス（キーボード操作時の枠） */
+  --focus-ring-width: var(--border-width-focus);
+  --focus-ring-offset: var(--space-025);
+  --focus-ring-color: var(--color-border-focused);
+  --focus-ring-color-inverse: var(--color-border-inverse);
+
+  /* 動き */
+  --motion-duration-press: var(--duration-100);
+  --motion-duration-change: var(--duration-150);
+
+  /* 重なり順 */
+  --z-index-header: var(--z-100);
+  --z-index-dialog: var(--z-500);
+  --z-index-toast: var(--z-900);
+
+  /* ページ */
+  --page-max-width: var(--size-content-max);
+  --page-padding-block: var(--space-200);
+  --page-padding-inline: var(--space-200);
+  --page-padding-bottom: var(--space-500);
+
+  /* =========================== 第3層: Component =========================== */
+
+  /* ヘッダー */
+  --header-bg: linear-gradient(135deg, var(--color-green-60) 0%, var(--color-bg-brand-bold) 100%);
+  --header-text: var(--color-text-inverse);
+  --header-padding-block: var(--space-150);
+  --header-padding-inline: var(--space-200);
+  --header-title-size: var(--font-size-lead);
+  --header-shadow: var(--shadow-header);
+
+  /* ボタン */
+  --button-height: var(--size-touch-target);
+  --button-height-compact: var(--size-touch-compact);
+  --button-padding-inline: var(--space-200);
+  --button-padding-inline-compact: var(--space-150);
+  --button-radius: var(--radius-md);
+  --button-font-size: var(--font-size-body);
+  --button-font-size-compact: var(--font-size-small);
+  --button-font-weight: var(--font-weight-bold);
+  --button-primary-bg: linear-gradient(135deg, var(--color-bg-brand) 0%, var(--color-bg-brand-bold) 100%);
+  --button-primary-text: var(--color-text-inverse);
+  --button-primary-shadow: var(--shadow-brand);
+  --button-secondary-bg: var(--color-bg-brand-subtle);
+  --button-secondary-bg-hover: var(--color-bg-brand-subtle-hover);
+  --button-secondary-text: var(--color-text-brand);
+  --button-outline-border: var(--color-border-input);
+  --button-outline-text: var(--color-text);
+  --button-link-text: var(--color-text-link);
+  --button-danger-link-text: var(--color-text-danger-link);
+
+  /* 入力欄（USWDS / VA のフォーム指針: 白地・はっきりした枠・16px以上） */
+  --input-height: var(--size-touch-target);
+  --input-padding-block: var(--space-100);
+  --input-padding-inline: var(--space-150);
+  --input-bg: var(--color-bg-surface);
+  --input-border: var(--color-border-input);
+  --input-border-width: var(--border-width-thin);
+  --input-border-focused: var(--color-border-focused);
+  --input-radius: var(--radius-md);
+  --input-font-size: var(--font-size-body);   /* 16px 未満だと iPhone で自動拡大される */
+  --input-text: var(--color-text);
+  --input-placeholder: var(--color-text-placeholder);
+  --input-duration-width: var(--size-input-duration);
+  --input-duration-min-width: var(--size-input-duration-min);
+  --input-rate-max-width: var(--size-input-rate-max);
+
+  /* ラベル・補足 */
+  --label-font-size: var(--font-size-body);
+  --label-font-weight: var(--font-weight-bold);
+  --label-color: var(--color-text);
+  --label-gap: var(--space-050);
+  --field-gap: var(--space-150);
+  --hint-font-size: var(--font-size-small);
+  --hint-color: var(--color-text-subtle);
+
+  /* 選択肢（チップ: 作業区分・具体的内容に○をつける部品） */
+  --chip-height: var(--size-touch-target);
+  --chip-padding-inline: var(--space-200);
+  --chip-radius: var(--radius-full);
+  --chip-font-size: var(--font-size-body);
+  --chip-bg: var(--color-bg-surface);
+  --chip-border: var(--color-border-control);
+  --chip-border-width: var(--border-width-medium);
+  --chip-border-hover: var(--color-border-brand);
+  --chip-text: var(--color-text);
+  --chip-meta-text: var(--color-text-subtle);
+  --chip-selected-bg: var(--button-primary-bg);
+  --chip-selected-border: var(--color-border-brand-bold);
+  --chip-selected-text: var(--color-text-inverse);
+  --chip-selected-shadow: var(--shadow-brand);
+
+  /* カード */
+  --card-bg: var(--color-bg-surface);
+  --card-radius: var(--radius-lg);
+  --card-padding: var(--space-250);
+  --card-gap: var(--space-200);
+  --card-shadow: var(--elevation-raised);
+  --card-title-size: var(--font-size-lead);
+  --card-title-color: var(--color-text-brand);
+  --card-accent-width: var(--border-width-accent);
+
+  /* 小さな日報カード（作業者の履歴・ごみ箱） */
+  --record-bg: var(--color-bg-subtle);
+  --record-accent: var(--color-border-brand);
+  --record-radius: var(--radius-md);
+  --record-padding: var(--space-150);
+  --record-shadow: var(--elevation-flat);
+  --record-muted-bg: var(--color-bg-neutral-subtle);
+  --record-muted-accent: var(--color-border-neutral);
+
+  /* バッジ（状態の印） */
+  --badge-font-size: var(--font-size-small);
+  --badge-padding-block: var(--space-025);
+  --badge-padding-inline: var(--space-100);
+  --badge-radius: var(--radius-full);
+  --badge-neutral-bg: var(--color-bg-surface);
+  --badge-neutral-border: var(--color-border-neutral);
+  --badge-neutral-text: var(--color-text-subtle);
+  --badge-success-bg: var(--color-bg-brand);
+  --badge-warning-bg: var(--color-bg-accent);
+  --badge-danger-bg: var(--color-bg-danger);
+  --badge-strong-text: var(--color-text-inverse);
+
+  /* お知らせ・警告（alert） */
+  --alert-radius: var(--radius-md);
+  --alert-padding-block: var(--space-150);
+  --alert-padding-inline: var(--space-200);
+  --alert-danger-bg: var(--color-bg-danger-subtle);
+  --alert-danger-border: var(--color-border-danger-subtle);
+  --alert-danger-border-strong: var(--color-border-danger);
+  --alert-danger-text: var(--color-text-danger);
+  --alert-info-bg: var(--color-bg-info-subtle);
+  --alert-info-border: var(--color-border-info);
+  --alert-info-text: var(--color-text);
+
+  /* 切り替え（セグメント: 作業者／オペレーター、カード／表） */
+  --segment-bg: var(--color-bg-sunken);
+  --segment-padding: var(--space-050);
+  --segment-active-bg: var(--color-bg-surface);
+  --segment-active-text: var(--color-text-brand);
+  --segment-text: var(--color-text-subtle);
+  --segment-active-shadow: var(--shadow-inset-selected);
+
+  /* 画面切り替えタブ（オペレーター） */
+  --tab-height: var(--size-touch-target);
+  --tab-track-bg: var(--color-bg-inverse-subtle);
+  --tab-radius: var(--radius-md);
+  --tab-text: var(--color-text-inverse-subtle);
+  --tab-hover-bg: var(--color-bg-inverse-hover);
+  --tab-active-bg: var(--color-bg-surface);
+  --tab-active-text: var(--color-text-brand);
+  --tab-font-size: var(--font-size-small);
+  --tab-icon-size: var(--font-size-lead);
+
+  /* 表 */
+  --table-font-size: var(--font-size-small);
+  --table-cell-padding-block: var(--space-100);
+  --table-cell-padding-inline: var(--space-150);
+  --table-header-bg: var(--color-bg-brand-subtle);
+  --table-header-text: var(--color-text-brand);
+  --table-row-hover-bg: var(--color-bg-subtle);
+  --table-border: var(--color-border);
+  --table-group-border: var(--color-border-brand);
+  --table-wrap-cell-min-width: var(--size-table-cell-wrap-min);
+
+  /* ダイアログ（モーダル） */
+  --dialog-overlay: var(--color-bg-overlay);
+  --dialog-max-width: var(--size-dialog-max);
+  --dialog-narrow-max-width: var(--size-dialog-narrow-max);
+  --dialog-shadow: var(--elevation-overlay);
+  --dialog-padding-block: var(--space-400);
+
+  /* トースト（すぐ消えるお知らせ） */
+  --toast-bg: var(--color-bg-toast);
+  --toast-danger-bg: var(--color-bg-danger);
+  --toast-text: var(--color-text-inverse);
+  --toast-radius: var(--radius-full);
+  --toast-offset: var(--space-300);
+
+  /* 集計の数字 */
+  --stat-value-size: var(--font-size-display);
+  --stat-value-color: var(--color-text-brand);
+  --stat-label-size: var(--font-size-small);
+
+  /* ハガキ様式の日報 */
+  --postcard-bg: var(--color-bg-surface-paper);
+  --postcard-border: var(--color-border-brand-bold);
+  --postcard-title-spacing: var(--letter-spacing-wide);
+  --entry-border: var(--color-border-decorative);
+  --confirm-key-width: var(--size-label-column);
+  --amount-column-min-width: var(--size-amount-column);
+}
+
+/* スマホ（幅 640px 以下）: ここで値を差し替える。部品側で数値を書かない */
+@media (max-width: 40em) {
+  :root {
+    --page-padding-block: var(--space-150);
+    --page-padding-inline: var(--space-150);
+    --page-padding-bottom: var(--space-400);
+    --card-padding: var(--space-200);
+    --header-padding-block: var(--space-100);
+    --header-padding-inline: var(--space-150);
+    --header-title-size: var(--font-size-body);
+  }
+}
+
+/* 動きを減らす設定の利用者には、アニメーションを止める */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-press: 0ms;
+    --motion-duration-change: 0ms;
+    --scale-pressed: 1;
+  }
+}

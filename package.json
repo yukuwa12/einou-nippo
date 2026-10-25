@@ -1,0 +1,20 @@
+{
+  "name": "einou-nippo",
+  "version": "1.0.0",
+  "description": "営農日報アプリ（実績公開用） - 紙のハガキ様式の作業日報をWeb化し、作業者の入力とオペレーターの確認・賃金集計・Excel出力を行う",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "seed-demo": "node scripts/seed-demo.js",
+    "check:design": "node scripts/check-design-tokens.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  },
+  "private": true
+}

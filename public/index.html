@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>営農日報</title>
+  <!-- デザイントークン（仕様: DESIGN_SYSTEM.md）→ 部品のスタイルの順に読み込む -->
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="style.css">
+  <!-- スマホのホーム画面アプリ（PWA）設定 -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#3e6437">
+  <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icon-16.png">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="営農日報">
+</head>
+<body>
+  <header class="app-header">
+    <h1>🌾 営農日報</h1>
+    <div id="header-user" class="header-user hidden">
+      <span id="user-label"></span>
+      <button id="btn-logout" class="btn btn-ghost">ログアウト</button>
+    </div>
+    <!-- オペレーター画面の切り替えタブ（ヘッダーと一緒に常に画面上部に表示） -->
+    <nav id="op-tabs" class="op-tabs hidden" role="tablist" aria-label="管理画面の切り替え">
+      <button type="button" class="op-tab" data-tab="reports" role="tab"><span class="op-tab-icon">📋</span><span>日報</span></button>
+      <button type="button" class="op-tab" data-tab="summary" role="tab"><span class="op-tab-icon">📊</span><span>集計・出力</span></button>
+      <button type="button" class="op-tab" data-tab="settings" role="tab"><span class="op-tab-icon">⚙️</span><span>設定</span></button>
+      <button type="button" class="op-tab" data-tab="data" role="tab"><span class="op-tab-icon">🗂️</span><span>データ</span></button>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- 合言葉ゲート（インターネット公開時のみ表示） -->
+    <section id="view-gate" class="view hidden">
+      <div class="card login-card">
+        <h2>合言葉の確認</h2>
+        <form id="form-gate">
+          <label>合言葉
+            <input type="password" id="gate-code" placeholder="組合から伝えられた合言葉" required>
+          </label>
+          <button type="submit" class="btn btn-primary btn-block">開く</button>
+          <p class="hint">このアプリは関係者専用です。合言葉が分からない場合はオペレーター（管理者）にお尋ねください。一度入力すればこの端末では次回から不要です。</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ログイン画面 -->
+    <section id="view-login" class="view">
+      <div class="card login-card">
+        <img src="icon-192.png" alt="" class="login-logo">
+        <h2>ログイン</h2>
+        <div class="role-tabs">
+          <button id="tab-worker" class="role-tab active" type="button">作業者</button>
+          <button id="tab-operator" class="role-tab" type="button">オペレーター</button>
+        </div>
+
+        <form id="form-login-worker" class="login-form">
+          <label>氏名　<span class="name-note">苗字＋名前で、苗字と名前の間を詰めて入力（例：山田太郎）</span>
+            <input type="text" id="login-name" placeholder="例：山田太郎" autocomplete="name" required>
+          </label>
+          <button type="submit" class="btn btn-primary btn-block">日報入力をはじめる</button>
+          <p class="hint">氏名を入力するだけで利用できます。毎回同じ書き方で入力してください（賃金集計は氏名単位で行われます）。スペースが入っていても自動で詰めて登録されます。</p>
+        </form>
+
+        <form id="form-login-operator" class="login-form hidden">
+          <label>管理パスワード
+            <input type="password" id="login-password" placeholder="パスワード" required>
+          </label>
+          <button type="submit" class="btn btn-primary btn-block">管理画面へログイン</button>
+        </form>
+      </div>
+      <p class="help-link"><a href="help.html">📖 使い方の説明を見る</a></p>
+    </section>
+
+    <!-- 作業者画面 -->
+    <section id="view-worker" class="view hidden">
+      <div class="card postcard">
+        <h2 class="postcard-title" id="worker-form-title">作 業 日 報</h2>
+        <form id="form-report">
+          <div class="grid-2">
+            <label>日付 <span class="req">必須</span>
+              <input type="date" id="f-date" required>
+            </label>
+            <label>氏名
+              <div class="static-name" id="f-worker-name"></div>
+            </label>
+          </div>
+          <div id="deadline-note" class="hidden"></div>
+
+          <div id="entries"><!-- 作業①②… JSで生成 --></div>
+
+          <button type="button" id="btn-add-entry" class="btn btn-secondary btn-block">＋ 作業を追加（単価が異なる作業は行を分けて記入）</button>
+
+          <label class="mt">特記事項
+            <textarea id="f-note" rows="2" placeholder="連絡事項、気づいたことなど"></textarea>
+          </label>
+
+          <div id="sheet-total" class="amount-preview hidden"></div>
+
+          <div class="form-actions">
+            <button type="submit" id="btn-submit" class="btn btn-primary btn-block">この内容で提出する</button>
+            <button type="button" id="btn-cancel-edit" class="btn btn-ghost btn-block hidden">編集をやめる</button>
+          </div>
+
+          <details class="onegai">
+            <summary>記入についてのお願い・その他留意事項等</summary>
+            <ol>
+              <li>「一般作業」「オペレーター作業」「車両運搬作業」については、該当する作業等に○印を、該当がない場合は「その他」に内容を記入願います。</li>
+              <li>上記作業は単価が異なるため、１日に２以上の作業の場合は、行を分けて記入願います。</li>
+              <li>水管理に伴う軽トラ等の利用は、担当面積の中での一体管理としています。</li>
+            </ol>
+          </details>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>自分の日報履歴</h2>
+        <p class="hint">オペレーターが内容を修正した日報には「オペレーター修正あり」と表示されます。「履歴」ボタンで、いつ・誰が・どう変更したかを確認できます。</p>
+        <div id="my-reports" class="report-cards"></div>
+      </div>
+
+      <div class="card" id="my-trash-card">
+        <h2>削除した日報（ごみ箱）</h2>
+        <p class="hint">削除した日報はここに残ります。「復元」で元に戻せます。</p>
+        <div id="my-trash" class="report-cards"></div>
+      </div>
+      <datalist id="places-list"></datalist>
+    </section>
+
+    <!-- オペレーター画面（上部のタブで「日報／集計・出力／設定／データ」を切り替え） -->
+    <section id="view-operator" class="view hidden">
+
+      <!-- 絞り込み（日報・集計タブで共通。ふだんは条件だけを1行で表示） -->
+      <details id="op-filter" class="card op-filter">
+        <summary>
+          <span class="op-filter-label">絞り込み</span>
+          <span id="op-filter-summary" class="op-filter-summary">すべての期間・全員</span>
+          <span class="op-filter-toggle"><span class="when-closed">条件を変える ▾</span><span class="when-open">閉じる ▴</span></span>
+        </summary>
+        <form id="form-filter">
+          <div class="grid-2">
+            <label>開始日
+              <input type="date" id="q-from">
+            </label>
+            <label>終了日
+              <input type="date" id="q-to">
+            </label>
+          </div>
+          <div class="grid-3">
+            <label>作業者
+              <select id="q-worker"><option value="">すべて</option></select>
+            </label>
+            <label>作業区分
+              <select id="q-worktype"><option value="">すべて</option></select>
+            </label>
+            <label>場所（部分一致）
+              <input type="text" id="q-place" placeholder="例：第1">
+            </label>
+          </div>
+          <div class="form-actions row">
+            <button type="submit" class="btn btn-primary">検索</button>
+            <button type="button" id="btn-clear-filter" class="btn btn-ghost">クリア</button>
+          </div>
+        </form>
+      </details>
+
+      <!-- タブ①：日報（確認・編集） -->
+      <div id="op-panel-reports" class="op-panel">
+        <div class="op-list-bar">
+          <div id="op-list-summary" class="op-list-summary"></div>
+          <div id="op-view-toggle" class="op-view-toggle" role="group" aria-label="表示のしかた">
+            <button type="button" class="op-view-btn" data-view="card">カード</button>
+            <button type="button" class="op-view-btn" data-view="table">表</button>
+          </div>
+        </div>
+        <div id="op-report-list">
+          <div id="op-cards" class="op-cards"></div>
+          <div id="op-table-wrap" class="card hidden">
+            <div class="table-wrap">
+              <table id="report-table">
+                <thead>
+                  <tr>
+                    <th>確認</th><th>日付</th><th>氏名</th><th>作業区分</th><th>具体的内容</th><th>場所</th>
+                    <th>時間</th><th>単価</th><th>金額</th><th>特記事項</th><th></th>
+                  </tr>
+                </thead>
+                <tbody id="report-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <p class="hint op-hint">「確認」は紙様式の印・サイン欄に相当します。チェックすると、その日報は作業者からは変更できなくなります。金額 = 時間 × 単価（単価は日報の登録時点のもの）。すべての操作は変更履歴に自動記録され、履歴は誰にも書き換えられません。</p>
+      </div>
+
+      <!-- タブ②：集計・出力 -->
+      <div id="op-panel-summary" class="op-panel hidden">
+        <div class="stat-row stat-row-4">
+          <div class="stat"><div class="stat-value" id="stat-count">0</div><div class="stat-label">日報(枚)</div></div>
+          <div class="stat"><div class="stat-value" id="stat-hours">0</div><div class="stat-label">合計時間(h)</div></div>
+          <div class="stat"><div class="stat-value" id="stat-amount">0</div><div class="stat-label">合計金額(円)</div></div>
+          <div class="stat"><div class="stat-value" id="stat-workers">0</div><div class="stat-label">作業者数</div></div>
+        </div>
+
+        <div class="card">
+          <h2>帳票の出力</h2>
+          <p class="hint">上の「絞り込み」で選んだ期間・作業者の内容で出力されます。</p>
+          <div class="export-grid">
+            <button type="button" id="btn-export" class="btn btn-secondary">月別出役明細書（全員）</button>
+            <button type="button" id="btn-export-one" class="btn btn-secondary">月別出役明細書（この作業者）</button>
+            <button type="button" id="btn-export-year" class="btn btn-secondary">年間集計表</button>
+            <button type="button" id="btn-export-detail" class="btn btn-ghost">作業明細（CSV）</button>
+          </div>
+          <p class="hint">「年間集計表」は作業区分・具体的内容ごとの時間と金額を月別に並べた表です。<b>期間を指定しなければ今の年度（4月〜翌3月）</b>、開始日・終了日を入れればその期間で出力します。作業者を選ぶとその方の分だけ、選ばなければ全員合計＋各人のシートが作られます。</p>
+        </div>
+
+        <div class="grid-2 align-start">
+          <div class="card">
+            <h2>作業者別集計（賃金）</h2>
+            <div class="table-wrap">
+              <table><thead><tr><th>作業者</th><th>作業数</th><th>時間(h)</th><th>金額(円)</th></tr></thead>
+              <tbody id="agg-worker"></tbody></table>
+            </div>
+          </div>
+          <div class="card">
+            <h2>作業区分別集計</h2>
+            <div class="table-wrap">
+              <table><thead><tr><th>作業区分</th><th>作業数</th><th>時間(h)</th><th>金額(円)</th></tr></thead>
+              <tbody id="agg-worktype"></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- タブ③：設定 -->
+      <div id="op-panel-settings" class="op-panel hidden">
+        <div class="card" id="deadline-card">
+          <h2>日報提出の締め日</h2>
+          <p class="hint">締め日を過ぎても作業者は提出できます。そのかわり提出のときに「<b>締め日を過ぎているので理事へ直接連絡してください</b>」と表示され、日報に「締め日後」の印が付きます。</p>
+          <label class="check-row"><input type="checkbox" id="dl-enabled"> 締め日を使う</label>
+          <div id="dl-body">
+            <h3>基本の締め日</h3>
+            <div class="dl-rule">
+              <span>対象月の</span>
+              <select id="dl-offset">
+                <option value="1">翌月</option>
+                <option value="0">同じ月</option>
+              </select>
+              <input type="number" id="dl-day" min="1" max="31" inputmode="numeric">
+              <span>日まで</span>
+            </div>
+            <p class="hint">例：「翌月・5日」なら、8月分の日報は9月5日まで。「31」にすると月末になります（2月などは自動でその月の末日に合わせます）。</p>
+
+            <h3>月ごとに締め日を変える（任意）</h3>
+            <p class="hint">お盆や年末年始など、特定の月だけ締め日をずらしたいときに使います。ここで設定した月は基本の締め日より優先されます。</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>対象の月</th><th>締め日</th><th></th></tr></thead>
+                <tbody id="dl-override-tbody"></tbody>
+              </table>
+            </div>
+            <button type="button" id="btn-dl-add" class="btn btn-ghost">＋ 月ごとの締め日を追加</button>
+
+            <div id="dl-preview" class="dl-preview"></div>
+          </div>
+          <div class="form-actions">
+            <button type="button" id="btn-save-deadline" class="btn btn-primary">締め日を保存</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>マスタ管理</h2>
+          <h3>作業区分・単価・具体的内容の選択肢</h3>
+          <p class="hint">単価が0または空欄の作業区分は金額計算の対象外です。単価の変更は、変更後に登録・更新された日報から適用されます（過去の日報の金額は変わりません）。具体的内容の選択肢は「/」区切りで入力してください。</p>
+          <div class="table-wrap">
+            <table id="worktype-table">
+              <thead><tr><th>作業区分名</th><th>単価(円/時)</th><th>具体的内容の選択肢（/区切り）</th><th></th></tr></thead>
+              <tbody id="worktype-tbody"></tbody>
+            </table>
+          </div>
+          <button type="button" id="btn-add-worktype" class="btn btn-ghost">＋ 作業区分を追加</button>
+
+          <h3>場所の候補</h3>
+          <p class="hint">1行に1項目。作業者の「場所」入力時の候補として表示されます（候補にない場所も自由に入力できます）。</p>
+          <textarea id="m-places" rows="5"></textarea>
+
+          <div class="form-actions">
+            <button id="btn-save-masters" class="btn btn-primary">マスタを保存</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- タブ④：データ（バックアップ・ごみ箱） -->
+      <div id="op-panel-data" class="op-panel hidden">
+        <div class="card">
+          <h2>バックアップと復元</h2>
+          <h3>手元に保存する</h3>
+          <p class="hint">全データを1つのファイルとしてこの端末に保存します。月1回程度の保存をおすすめします。</p>
+          <div class="form-actions">
+            <button type="button" id="btn-backup" class="btn btn-secondary">バックアップ保存</button>
+          </div>
+
+          <h3>自動の控えから戻す</h3>
+          <p class="hint">毎日自動で全データの控えを保存しています（直近2週間は毎日分、それ以前は各月1日分を1年分）。「この時点に戻す」を押すと、全データがその時点の内容に置き換わります。復元の直前の状態も「復元直前の控え」として自動で残るため、誤って復元してもやり直せます。</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>控え</th><th>日報の枚数</th><th></th></tr></thead>
+              <tbody id="backup-tbody"></tbody>
+            </table>
+          </div>
+
+          <h3>手元のバックアップファイルから復元</h3>
+          <p class="hint">「バックアップ保存」でダウンロードしたファイル（nippo-backup-〜.json）から全データを戻せます。</p>
+          <div class="form-actions row">
+            <input type="file" id="restore-file" accept=".json,application/json">
+            <button type="button" id="btn-restore-file" class="btn btn-secondary">このファイルから復元</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>ごみ箱（削除済みの日報）</h2>
+          <p class="hint">削除された日報はここに残り、内容の見直しと復元ができます。</p>
+          <div id="op-trash" class="report-cards"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- オペレーター用 編集モーダル -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-body card postcard">
+      <h2 class="postcard-title">日報を編集</h2>
+      <form id="form-edit">
+        <div class="grid-2">
+          <label>日付
+            <input type="date" id="e-date" required>
+          </label>
+          <label>氏名
+            <input type="text" id="e-worker" required>
+          </label>
+        </div>
+        <div id="modal-entries"></div>
+        <button type="button" id="btn-modal-add-entry" class="btn btn-secondary btn-block">＋ 作業を追加</button>
+        <label class="mt">特記事項
+          <textarea id="e-note" rows="2"></textarea>
+        </label>
+        <div class="form-actions row">
+          <button type="submit" class="btn btn-primary">保存</button>
+          <button type="button" id="btn-modal-close" class="btn btn-ghost">閉じる</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 変更履歴モーダル -->
+  <div id="history-modal" class="modal hidden">
+    <div class="modal-body card">
+      <h2>変更履歴</h2>
+      <p class="hint">この日報に対するすべての操作の記録です。履歴は自動で記録され、誰にも書き換え・削除できません。</p>
+      <div id="history-body"></div>
+      <div class="form-actions">
+        <button type="button" id="btn-history-close" class="btn btn-ghost btn-block">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 提出前の確認画面 -->
+  <div id="confirm-modal" class="modal hidden">
+    <div class="modal-body card postcard">
+      <h2 class="postcard-title" id="confirm-title">この内容で提出しますか？</h2>
+      <div id="confirm-body"></div>
+      <div class="form-actions">
+        <button type="button" id="btn-confirm-submit" class="btn btn-primary btn-block">提出する</button>
+        <button type="button" id="btn-confirm-back" class="btn btn-ghost btn-block">戻って修正する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 締め日を過ぎて提出・更新したあとの案内（ボタンを押すまで閉じない） -->
+  <div id="late-modal" class="modal hidden">
+    <div class="modal-body card late-card">
+      <div class="late-icon">⚠</div>
+      <h2 id="late-title" class="late-title">提出しました</h2>
+      <div id="late-body"></div>
+      <div class="form-actions">
+        <button type="button" id="btn-late-ok" class="btn btn-primary btn-block">わかりました</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+  <script>
+    // ホーム画面アプリ（PWA）として動くための登録
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(() => { /* 未対応環境は通常のWebとして動作 */ });
+      });
+    }
+  </script>
+</body>
+</html>

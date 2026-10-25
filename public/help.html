@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>使い方 - 営農日報</title>
+  <!-- デザイントークン（仕様: DESIGN_SYSTEM.md）→ 部品のスタイルの順に読み込む -->
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+</head>
+<body>
+  <header class="app-header">
+    <h1>🌾 営農日報　使い方</h1>
+    <a href="./" class="btn btn-ghost header-back">← アプリに戻る</a>
+  </header>
+
+  <div class="help-body">
+
+    <p class="help-intro">このページでは、営農日報アプリの使い方を説明します。分からないことがあれば、オペレーター（管理者）にお尋ねください。</p>
+
+    <h2>1．はじめて使うとき</h2>
+    <div class="step"><div class="step-no">1</div><div>オペレーターから伝えられた<b>アドレス（URL）</b>をスマホで開きます</div></div>
+    <div class="step"><div class="step-no">2</div><div><b>合言葉</b>を入力します（この端末では初回の1回だけです）</div></div>
+    <div class="step"><div class="step-no">3</div><div><b>氏名</b>を入力して「日報入力をはじめる」を押します<br>
+      <span class="hint">苗字と名前の間は詰めて入力してください（例：山田太郎）。毎回同じ書き方で入力すると、賃金の集計が正しく行われます。</span></div></div>
+
+    <div class="note">📱 <b>ホーム画面に追加すると便利です</b><br>
+      iPhone：Safariの共有ボタン（□に↑）→「ホーム画面に追加」<br>
+      Android：Chromeのメニュー（⋮）→「アプリをインストール」<br>
+      次からはホーム画面のアイコンを押すだけで開けます。</div>
+
+    <h2>2．日報の書き方（毎日の記録）</h2>
+    <div class="step"><div class="step-no">1</div><div><b>日付</b>を確認します（今日の日付が最初から入っています）</div></div>
+    <div class="step"><div class="step-no">2</div><div><b>作業区分に○</b>をつけます（ボタンを押すと色がつきます）</div></div>
+    <div class="step"><div class="step-no">3</div><div>当てはまる<b>具体的内容</b>があれば○をつけます（複数可）。なければ「その他」に書きます</div></div>
+    <div class="step"><div class="step-no">4</div><div><b>開始時刻と終了時刻</b>を入れると、時間は自動で計算されます<br>
+      <span class="hint">時刻が分からないときは、「時間」の欄に直接「◯時間◯分」を入れてもかまいません。</span></div></div>
+    <div class="step"><div class="step-no">5</div><div><b>場所</b>を入れます（例：第1圃場）</div></div>
+    <div class="step"><div class="step-no">6</div><div>1日に単価の違う作業を2つ以上したときは<b>「＋作業を追加」</b>を押して、作業②に同じように記入します</div></div>
+    <div class="step"><div class="step-no">7</div><div>連絡事項があれば<b>特記事項</b>に書きます</div></div>
+    <div class="step"><div class="step-no">8</div><div><b>「この内容で提出する」</b>を押すと確認画面が出ます。内容をよく見て<b>「提出する」</b>を押せば完了です。直したいときは「戻って修正する」を押します</div></div>
+
+    <h2>3．提出したあと</h2>
+    <ul>
+      <li>画面の下の<b>「自分の日報履歴」</b>に、提出した日報が並びます</li>
+      <li>間違えたときは<b>「編集」</b>で直せます。<b>「削除」</b>するとごみ箱に移り、「復元」で元に戻せます</li>
+      <li>オペレーターが<b>確認（印に相当）</b>をつけた日報は、変更できなくなります。直したいことがあればオペレーターに伝えてください</li>
+      <li>オペレーターがあなたの日報を直した場合は「<b>オペレーター修正あり</b>」と表示されます。「履歴」ボタンで、いつ・誰が・どこを変えたかを確認できます</li>
+    </ul>
+
+    <h2>4．よくある質問</h2>
+    <p class="qa-q">開いたのに画面がなかなか出てこない</p>
+    <p class="qa-a">しばらく誰も使っていないと、最初の表示に30秒〜1分かかることがあります。故障ではないので、そのままお待ちください。</p>
+    <p class="qa-q">合言葉を忘れた・変わったと言われた</p>
+    <p class="qa-a">オペレーターに確認してください。</p>
+    <p class="qa-q">名前を間違えて提出してしまった</p>
+    <p class="qa-a">その日報を「削除」して、正しい名前で入り直して提出し直してください。分からなければオペレーターに伝えれば直してもらえます。</p>
+    <p class="qa-q">締め日を過ぎてしまった</p>
+    <p class="qa-a">提出はそのままできます。ただし賃金の計算に間に合わない場合があるので、提出したあと<b>必ず理事へ直接ご連絡ください</b>（締め日を過ぎているときは、提出の前後に画面でもお知らせします）。</p>
+    <p class="qa-q">スマホを持っていない・操作が難しい</p>
+    <p class="qa-a">いままで通り紙で提出してもかまいません（オペレーターが代わりに入力します）。ご家族による代理入力もできます。</p>
+
+    <h2>5．オペレーター（管理者）向け</h2>
+    <p>ログイン画面で「オペレーター」を選び、管理パスワードでログインします。</p>
+    <ul>
+      <li><b>絞り込み</b>：期間・作業者・作業区分・場所で日報を探せます</li>
+      <li><b>確認欄</b>：チェックすると紙の印・サインに相当し、その日報は作業者から変更できなくなります</li>
+      <li><b>集計</b>：作業者別の支払額・作業区分別の集計が自動で表示されます</li>
+      <li><b>CSV出力</b>：Excelで開ける形式で書き出せます（賃金支払いの資料に）</li>
+      <li><b>日報提出の締め日</b>：「対象月の翌月◯日まで」のように基本の締め日を決められます。お盆や年末年始など、月ごとに締め日を変えることもできます。締め日を過ぎた提出には「締め日後の提出」の印が付き、作業者には理事へ連絡するよう案内が出ます</li>
+      <li><b>マスタ管理</b>：作業区分・単価・選択肢・場所の候補を変更できます（単価の変更は、変更後に登録された日報から適用）</li>
+      <li><b>バックアップ保存</b>：全データを手元のファイルに保存できます（月1回程度をおすすめ）</li>
+      <li><b>バックアップと復元</b>：毎日自動で控えが残ります。「この時点に戻す」でその日の状態に復元できます（復元直前の状態も自動で控えられるので、やり直せます）</li>
+    </ul>
+
+    <div class="back-btn">
+      <a href="./" class="btn btn-primary btn-block">← アプリに戻る</a>
+    </div>
+
+  </div>
+</body>
+</html>
